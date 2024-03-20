@@ -48,7 +48,7 @@
         },
         "mathover.matchRegex": {
           "title": "Match Regex",
-          "default": "#\\sMath:\\s(.+)",
+          "default": "(?<prefix>(\\/{2,}|#)\\s+Math:\\s)(?<expression>.+)",
           "type": "string",
           "description": "Regex to match math section."
         },
@@ -69,12 +69,6 @@
           "default": "g",
           "type": "string",
           "description": "Flags for regex to match wrong syntax."
-        },
-        "mathover.forwardSkip": {
-          "title": "Forward Skip",
-          "default": 8,
-          "type": "number",
-          "description": "Number of characters to skip from the beginning of the match."
         },
         "mathover.backwardSkip": {
           "title": "Backward Skip",

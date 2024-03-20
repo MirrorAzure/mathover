@@ -20,20 +20,22 @@ export function activate(context: vscode.ExtensionContext) {
 		const correctUsage: vscode.DecorationOptions[] = [];
 		let match;
 		while ((match = matchRegEx.exec(text))) {
-			const start = match.index + config.forwardSkip;
-			const end = match.index + match[0].length - config.backwardSkip;
-			const startPos = activeEditor.document.positionAt(start);
-			const endPos = activeEditor.document.positionAt(end);
-			const range = new vscode.Range(startPos, endPos);
-			const latex = match[0].substring(config.forwardSkip, match[0].length - config.backwardSkip);
-			// console.log(`Match: ${match[0]}, match index: ${match.index}, match length: ${match[0].length}, processed: ${latex}`);
-			const hoverUri = await tex2Svg.render(latex);
-			const decoration = { range: range, hoverMessage: hoverUri.text };
-
-			if (hoverUri.error || wrongRegEx.test(match[0])) {
-				wrongUsage.push(decoration);
-			} else {
-				correctUsage.push(decoration);
+			const groups = (match.groups || {})
+			if (('prefix' in groups) && ('expression' in groups)) {
+				const start = match.index + groups.prefix.length;
+				const end = match.index + match[0].length - config.backwardSkip;
+				const startPos = activeEditor.document.positionAt(start);
+				const endPos = activeEditor.document.positionAt(end);
+				const range = new vscode.Range(startPos, endPos);
+				const latex = groups.expression;
+				// console.log(`Match: ${match[0]}, match index: ${match.index}, match length: ${match[0].length}, processed: ${latex}`);
+				const hoverUri = await tex2Svg.render(latex);
+				const decoration = { range: range, hoverMessage: hoverUri.text };
+				if (hoverUri.error || wrongRegEx.test(match[0])) {
+					wrongUsage.push(decoration);
+				} else {
+					correctUsage.push(decoration);
+				}
 			}
 		}
 		activeEditor.setDecorations(config.wrongDecorationType, wrongUsage);

@@ -48,7 +48,8 @@ export class Tex2Svg {
 			});
 		} catch (err) {
 			// vscode.window.showWarningMessage(err);
-			return { text: err, error: true }; // return the string
+			let error_msg = (String(err) || '')
+			return { text: error_msg, error: true }; // return the string
 		}
 
 		let svg = data?.svg;
